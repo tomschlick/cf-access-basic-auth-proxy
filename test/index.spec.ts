@@ -149,6 +149,22 @@ describe("cf-access-basic-auth-proxy", () => {
     expect(await res.text()).toBe("origin-body");
   });
 
+  it("accepts a real Cloudflare Access Client ID ending in .access", async () => {
+    const stub = stubOrigin();
+    const realClientId = "8838e28cc8e8509086fcf78e52af7760.access";
+    const res = await worker.fetch(
+      new Request("https://proxy.test/x", {
+        headers: { Authorization: basic(realClientId, CLIENT_SECRET) },
+      }),
+      makeEnv(),
+      createExecutionContext(),
+    );
+    expect(stub).toHaveBeenCalledTimes(1);
+    const forwarded = stub.mock.calls[0][0] as Request;
+    expect(forwarded.headers.get("CF-Access-Client-Id")).toBe(realClientId);
+    expect(res.status).toBe(200);
+  });
+
   it("returns 502 when the origin fetch throws", async () => {
     vi.stubGlobal(
       "fetch",

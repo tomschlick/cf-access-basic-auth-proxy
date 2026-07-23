@@ -111,11 +111,12 @@ function sanitizeAndValidateAccessHeader(value: string, fieldName: string): stri
   const sanitized = sanitizeHeaderValue(value);
 
   // Cloudflare service tokens are long alphanumeric strings (with - and _).
+  // The Client ID also ends in a literal ".access", so "." must be allowed too.
   if (sanitized.length < 20 || sanitized.length > 300) {
     console.warn(`Invalid ${fieldName} length`);
     return null;
   }
-  if (!/^[A-Za-z0-9_-]+$/.test(sanitized)) {
+  if (!/^[A-Za-z0-9._-]+$/.test(sanitized)) {
     console.warn(`Invalid characters in ${fieldName}`);
     return null;
   }
