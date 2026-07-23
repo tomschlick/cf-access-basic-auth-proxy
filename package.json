@@ -1,0 +1,25 @@
+{
+  "name": "cf-access-basic-auth-proxy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "cloudflare": {
+    "bindings": {
+      "ORIGIN_URL": {
+        "description": "Base URL (scheme + host) of your Cloudflare Access-protected origin, e.g. `https://internal.example.com`. Incoming request paths and query strings are preserved."
+      }
+    }
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.18.7",
+    "@cloudflare/workers-types": "^5.20260723.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.113.0"
+  }
+}
