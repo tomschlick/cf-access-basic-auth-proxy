@@ -128,7 +128,7 @@ test/index.spec.ts          Vitest suite (@cloudflare/vitest-pool-workers)
 wrangler.jsonc              name, main, compatibility_date, observability, vars.ORIGIN_URL
 package.json                scripts + cloudflare.bindings description + devDeps
 tsconfig.json               Workers + vitest-pool-workers types
-vitest.config.ts            defineWorkersConfig pointing at wrangler.jsonc
+vitest.config.ts            cloudflareTest plugin pointing at wrangler.jsonc
 .github/workflows/ci.yml    typecheck + test on push/PR
 .gitignore                  node_modules, .wrangler, dist, .dev.vars, coverage, .DS_Store
 README.md                   deploy button, how it works, security model, setup, usage, local dev
@@ -178,16 +178,13 @@ LICENSE                     MIT, Tom Schlick, 2026
 }
 ```
 
-**vitest.config.ts**
+**vitest.config.ts** (vitest 4 / `@cloudflare/vitest-pool-workers` 0.18+ uses the `cloudflareTest` plugin, not the old `defineWorkersConfig`; the package is ESM-only, so `package.json` must set `"type": "module"`)
 ```ts
-import { defineWorkersConfig } from "@cloudflare/vitest-pool-workers/config";
+import { cloudflareTest } from "@cloudflare/vitest-pool-workers";
+import { defineConfig } from "vitest/config";
 
-export default defineWorkersConfig({
-  test: {
-    poolOptions: {
-      workers: { wrangler: { configPath: "./wrangler.jsonc" } },
-    },
-  },
+export default defineConfig({
+  plugins: [cloudflareTest({ wrangler: { configPath: "./wrangler.jsonc" } })],
 });
 ```
 
